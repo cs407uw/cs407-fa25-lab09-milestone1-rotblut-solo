@@ -23,7 +23,7 @@ class Ball(
     private var isFirstUpdate = true
 
     init {
-        // TODO: Call reset()
+        reset()
     }
 
     /**
@@ -38,6 +38,27 @@ class Ball(
             return
         }
 
+        val a0x = accX
+        val a0y = accY
+
+        accX = xAcc
+        accY = yAcc
+
+
+        val newVx = velocityX + 0.5f * (a0x + accX) * dT
+        val newVy = velocityY + 0.5f * (a0y + accY) * dT
+
+        val dx = velocityX * dT + (dT * dT / 6f) * (3f * a0x + accX)
+        val dy = velocityY * dT + (dT * dT / 6f) * (3f * a0y + accY)
+
+        posX += dx
+        posY += dy
+
+        velocityX = newVx
+        velocityY = newVy
+
+        checkBoundaries()
+
     }
 
     /**
@@ -46,8 +67,35 @@ class Ball(
      * boundary should be set to 0.
      */
     fun checkBoundaries() {
-        // TODO: implement the checkBoundaries function
-        // (Check all 4 walls: left, right, top, bottom)
+        // Left wall
+        if (posX < 0f) {
+            posX = 0f
+            velocityX = 0f
+            accX = 0f
+        }
+
+        // Right wall
+        val rightLimit = backgroundWidth - ballSize
+        if (posX > rightLimit) {
+            posX = rightLimit
+            velocityX = 0f
+            accX = 0f
+        }
+
+        // Top wall
+        if (posY < 0f) {
+            posY = 0f
+            velocityY = 0f
+            accY = 0f
+        }
+
+        // Bottom wall
+        val bottomLimit = backgroundHeight - ballSize
+        if (posY > bottomLimit) {
+            posY = bottomLimit
+            velocityY = 0f
+            accY = 0f
+        }
     }
 
     /**
@@ -55,7 +103,14 @@ class Ball(
      * velocity and acceleration.
      */
     fun reset() {
-        // TODO: implement the reset function
-        // (Reset posX, posY, velocityX, velocityY, accX, accY, isFirstUpdate)
+        posX = (backgroundWidth - ballSize) / 2f
+        posY = (backgroundHeight - ballSize) / 2f
+
+        velocityX = 0f
+        velocityY = 0f
+        accX = 0f
+        accY = 0f
+
+        isFirstUpdate = true
     }
 }
